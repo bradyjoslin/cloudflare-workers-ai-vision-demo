@@ -6,7 +6,7 @@
 
 > A real-time computer-vision demo on Cloudflare's developer platform: it streams your device camera to **Workers AI**, runs object detection and multimodal vision models at the edge, and draws the results back over the live video — all from a single [Astro](https://astro.build) app deployed as one Cloudflare Worker.
 
-No database, no build-time secrets, and no extra services. Just a browser, an Astro Worker, and the Workers AI binding.
+No manually-created databases, no build-time secrets, and no `.env` file. Just a browser, an Astro Worker, and the Workers AI binding. The Astro Cloudflare adapter may automatically provision support bindings at deploy time, such as `SESSION` for Astro sessions and `IMAGES` for the Astro image service.
 
 > [!NOTE]
 > **Disclaimer — personal project.** This is a personal, community demo built to show off the Cloudflare developer platform. It is **not an official Cloudflare product** and is not affiliated with, endorsed by, or supported by Cloudflare, Inc. It is provided "as is" for demonstration and educational purposes. "Cloudflare", "Workers", and "Workers AI" are trademarks of Cloudflare, Inc.
@@ -91,7 +91,7 @@ graph TD
     VLM -->|"assessment JSON"| Overlay
 ```
 
-**Key design decisions.** Expensive work (inference) is pushed to the `AI` binding while the browser keeps capture and overlay state lightweight. All application state — zones, event logs, model choice — is tab-local, so the demo needs no database or KV. Camera frames are sampled and downscaled in the browser to keep payloads small and inference cheap. Cloudflare Access is shown as an **optional** front door, not a requirement.
+**Key design decisions.** Expensive work (inference) is pushed to the `AI` binding while the browser keeps capture and overlay state lightweight. App-specific state — zones, event logs, model choice — is tab-local, so the demo does not require you to create a database, KV namespace, or storage bucket before deploying. Camera frames are sampled and downscaled in the browser to keep payloads small and inference cheap. Cloudflare Access is shown as an **optional** front door, not a requirement.
 
 ## Tech stack
 
@@ -114,7 +114,7 @@ graph TD
 
 ```bash
 # 1. Clone
-git clone https://github.com/<your-username>/cloudflare-workers-ai-vision-demo.git
+git clone https://github.com/Gryczka/cloudflare-workers-ai-vision-demo.git
 cd cloudflare-workers-ai-vision-demo
 
 # 2. Install dependencies
@@ -167,10 +167,12 @@ The camera requires a **secure context (HTTPS)**, which `workers.dev` provides a
 
 ## Configuration
 
-This demo needs **no `.env` file and no secrets.** The only binding is Workers AI (`AI`), and the only "configuration" is which Cloudflare account to deploy to:
+This demo needs **no `.env` file and no secrets.** The only application binding you configure directly is Workers AI (`AI`), and the only required "configuration" is which Cloudflare account to deploy to:
 
 - **`CLOUDFLARE_ACCOUNT_ID`** (environment variable) — only needed when your login has multiple accounts.
 - Alternatively, pin the account permanently by adding `"account_id": "<your_account_id>"` to `wrangler.jsonc`.
+
+Astro's Cloudflare adapter can also add automatically provisioned support bindings when you build/deploy, including `SESSION` for Astro sessions and `IMAGES` for the default Cloudflare image service. You do not need to create those manually for this demo.
 
 Other tunables live at the top of each demo's inline `<script>` (e.g. `sampleMs` for frame cadence, `minScore` for the confidence threshold, `captureWidth`/`captureHeight` for frame size) and in [`wrangler.jsonc`](wrangler.jsonc), which is commented field-by-field.
 

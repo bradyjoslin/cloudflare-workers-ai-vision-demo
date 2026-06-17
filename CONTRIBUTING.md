@@ -17,7 +17,7 @@ For anything beyond a small fix, please open an issue first to discuss the appro
 ## Development setup
 
 ```bash
-git clone https://github.com/<your-username>/cloudflare-workers-ai-vision-demo.git
+git clone https://github.com/Gryczka/cloudflare-workers-ai-vision-demo.git
 cd cloudflare-workers-ai-vision-demo
 npm install
 npx wrangler login          # required: Workers AI runs remotely, even in dev
