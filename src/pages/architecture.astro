@@ -1,0 +1,46 @@
+---
+/** `/architecture` — Static reference-architecture page (diagram + per-route flow breakdown). */
+import ArchitectureDiagram from '../components/ArchitectureDiagram.astro';
+import FlowBreakdown from '../components/FlowBreakdown.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import Layout from '../layouts/Layout.astro';
+
+const steps = [
+	{
+		accent: 'compute',
+		title: 'Push expensive work to Workers AI',
+		body: 'DETR and the selectable vision models run behind an AI binding while the browser keeps capture and overlay state lightweight.',
+	},
+	{
+		accent: 'ai',
+		title: 'Keep state in the browser',
+		body: 'Zones, event logs, model choices, and PPE assessment state are tab-local, so the demo avoids extra persistence services.',
+	},
+	{
+		accent: 'media',
+		title: 'Optionally gate with Access',
+		body: 'The Worker deploys open to the internet by default. You can optionally put Cloudflare Access in front of it to restrict the deployment to specific users or email domains.',
+	},
+] as const;
+---
+
+<Layout>
+	<Header />
+	<main>
+		<Hero
+			kicker="Reference architecture"
+			title="From camera to Workers AI and back"
+			subtitle="A static map of how this demo pushes frames to Cloudflare, runs DETR and vision models on Workers AI, and renders results back over the live video."
+			model="Astro · Workers · Workers AI · optional Access"
+			meta="static SVG · zero JavaScript"
+			cta={{ label: 'See the architecture', href: '#architecture' }}
+		/>
+		<ArchitectureDiagram />
+		<FlowBreakdown />
+		<HowItWorks title="Why this shape?" subtitle="The same platform primitives support live detection, virtual perimeter monitoring, and PPE compliance with only route-level behavior changes." steps={steps} />
+	</main>
+	<Footer />
+</Layout>

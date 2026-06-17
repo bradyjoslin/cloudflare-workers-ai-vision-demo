@@ -1,0 +1,49 @@
+{
+	// JSON schema for editor autocomplete and validation of this file.
+	"$schema": "node_modules/wrangler/config-schema.json",
+
+	// The Worker name. This becomes the *.workers.dev subdomain
+	// (e.g. cloudflare-workers-ai-vision-demo.<your-subdomain>.workers.dev)
+	// and the name shown in the Cloudflare dashboard. Rename it freely.
+	"name": "cloudflare-workers-ai-vision-demo",
+
+	// Pin the Workers runtime to a known-good date. Bump this when you want
+	// newer runtime features. See https://developers.cloudflare.com/workers/configuration/compatibility-dates/
+	"compatibility_date": "2026-05-27",
+
+	// Makes `fetch()` inside the Worker behave like a public client (no implicit
+	// access to private/internal addresses). Required by some Astro adapter setups.
+	"compatibility_flags": [
+		"global_fetch_strictly_public"
+	],
+
+	// Server entrypoint provided by the Astro Cloudflare adapter. `npm run build`
+	// compiles the Astro app and this entrypoint serves the rendered routes.
+	"main": "@astrojs/cloudflare/entrypoints/server",
+
+	// Static assets (the built client bundle) are served from ./dist via the
+	// ASSETS binding. Astro's build populates this directory.
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS"
+	},
+
+	// Workers AI binding. `env.AI.run(model, input)` calls Cloudflare's hosted
+	// models. `remote: true` means even `npm run dev` calls the REAL Workers AI
+	// service over the network (and is billed) — there is no local AI emulator.
+	// Docs: https://developers.cloudflare.com/workers-ai/
+	"ai": {
+		"binding": "AI",
+		"remote": true
+	},
+
+	// Enables Workers Logs / observability so you can inspect requests and
+	// `console.log` output in the dashboard. Safe to leave on.
+	"observability": {
+		"enabled": true
+	}
+
+	// To always deploy to one specific account, add:
+	//   "account_id": "<your_account_id>"
+	// Otherwise Wrangler uses CLOUDFLARE_ACCOUNT_ID or your logged-in account.
+}
